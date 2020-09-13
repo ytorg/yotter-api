@@ -1,4 +1,4 @@
-from youtube_data import proto, utils
+from yt_data import proto, utils
 from bs4 import BeautifulSoup as bs
 from flask import Markup
 import urllib.parse

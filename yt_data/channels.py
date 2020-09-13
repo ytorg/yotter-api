@@ -1,4 +1,4 @@
-from youtube_data import proto, utils
+from yt_data import proto, utils
 from flask import Markup as mk
 import requests
 import base64
@@ -80,9 +80,9 @@ def channel_ctoken_mobile(channel_id, page, sort, tab, view=1):
 def id_or_username(string):
     cidRegex = "^UC.{22}$"
     if re.match(cidRegex, string):
-        return "channel"
+        return 1
     else:
-        return "user"
+        return 0
 
 def get_channel_videos_tab(content):
     tabs = content['contents']['twoColumnBrowseResultsRenderer']['tabs']
@@ -179,8 +179,8 @@ def get_author_info_from_channel(content):
     }
     return channel
 
-def get_channel_info(channelId, videos=True, page=1, sort=3):
-    if id_or_username(channelId) == "channel":
+def get_channel_info(channelId, includeVideos=True, page=1, sort=3):
+    if id_or_username(channelId) == 1:
         videos = []
         ciUrl = "https://www.youtube.com/channel/{}".format(channelId)
         mainUrl = "https://www.youtube.com/browse_ajax?ctoken={}".format(channel_ctoken_desktop(channelId, page, sort, "videos"))
@@ -199,12 +199,11 @@ def get_channel_info(channelId, videos=True, page=1, sort=3):
 
         #videosTab = get_channel_videos_tab(content)
         authorInfo = get_author_info_from_channel(data)
-        if videos:
+        if includeVideos:
             gridVideoItemList = get_video_items_from_tab(content[1]['response']['continuationContents']['gridContinuation']['items'])
             for video in gridVideoItemList:
                 vid = get_info_grid_video_item(video, authorInfo)
                 videos.append(vid)
-            print({"channel":authorInfo, "videos":videos})
             return {"channel":authorInfo, "videos":videos}
         else:
             return {"channel":authorInfo}

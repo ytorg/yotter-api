@@ -84,7 +84,10 @@ def get_video_owner_info(data):
 
 def get_video_info(id):
     headers = {"Accept-Language": "en-US,en;q=0.5"}
-    encoded_search = urllib.parse.quote(id)
+    try:
+        encoded_search = urllib.parse.quote(id)
+    except:
+        encoded_search = id
     BASE_URL = "https://youtube.com"
 
     url = f"{BASE_URL}/watch?v={encoded_search}"
@@ -110,6 +113,7 @@ def get_video_info(id):
     dataInitial = json.loads(jsonIni)
 
     jsonDet = response[start2:end2]
+    print(jsonDet)
     dataDetails = json.loads(jsonDet)
 
     #title, views, date
