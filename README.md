@@ -1,7 +1,7 @@
 # yotter-api
 Yotter API built with Flask and Python.
-* [Test the API](test-the-api)
-* [Endpoints](endpoints)
+* [Test the API](#test-the-api)
+* [Endpoints](#endpoints)
 
 ## Repo structure
 * **yt_data** contains all the python files required to gather all the Youtube data.
