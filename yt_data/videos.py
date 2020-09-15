@@ -113,7 +113,6 @@ def get_video_info(id):
     dataInitial = json.loads(jsonIni)
 
     jsonDet = response[start2:end2]
-    print(jsonDet)
     dataDetails = json.loads(jsonDet)
 
     #title, views, date
