@@ -166,16 +166,25 @@ def get_info_grid_video_item(item, channel=None):
     return video
 
 def get_author_info_from_channel(content):
-    hmd = content['metadata']['channelMetadataRenderer']
-    cmd = content['header']['c4TabbedHeaderRenderer']
-    description = mk(hmd['description'])
+    try:
+        for alert in content['alerts']:
+            if "channel does not exist" in alert['alertRenderer']['text']['simpleText']:
+                return {"error":True, "text":alert['alertRenderer']['text']['simpleText']}
+    except:
+        hmd = content['metadata']['channelMetadataRenderer']
+        cmd = content['header']['c4TabbedHeaderRenderer']
+        description = mk(hmd['description'])
+    try:
+        banner = cmd['banner']['thumbnails'][0]['url']
+    except:
+        banner = False
     channel = {
         "channelId": cmd['channelId'],
         "username": cmd['title'],
         "thumbnail": "https:{}".format(cmd['avatar']['thumbnails'][0]['url'].replace("/", "~")),
         "description":description,
         "suscribers": cmd['subscriberCountText']['runs'][0]['text'].split(" ")[0],
-        "banner": cmd['banner']['thumbnails'][0]['url']
+        "banner": banner
     }
     return channel
 
@@ -199,14 +208,18 @@ def get_channel_info(channelId, includeVideos=True, page=1, sort=3):
 
         #videosTab = get_channel_videos_tab(content)
         authorInfo = get_author_info_from_channel(data)
-        if includeVideos:
-            gridVideoItemList = get_video_items_from_tab(content[1]['response']['continuationContents']['gridContinuation']['items'])
-            for video in gridVideoItemList:
-                vid = get_info_grid_video_item(video, authorInfo)
-                videos.append(vid)
-            return {"channel":authorInfo, "videos":videos}
-        else:
-            return {"channel":authorInfo}
+        try:
+            if authorInfo['error']:
+                return authorInfo
+        except:
+            if includeVideos:
+                gridVideoItemList = get_video_items_from_tab(content[1]['response']['continuationContents']['gridContinuation']['items'])
+                for video in gridVideoItemList:
+                    vid = get_info_grid_video_item(video, authorInfo)
+                    videos.append(vid)
+                return {"channel":authorInfo, "videos":videos}
+            else:
+                return {"channel":authorInfo}
 
     else:
         baseUrl = "https://www.youtube.com/user/{}".format(channelId)
