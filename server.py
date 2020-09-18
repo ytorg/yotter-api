@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from flask_restful import Resource, Api, reqparse
-from yt_data import channels as ytchannel
+from yt_data import channel as ytchannel
 from yt_data import search as ytsearch
-from yt_data import videos as ytvideo
+from yt_data import video as ytvideo
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine
 from json import dumps
